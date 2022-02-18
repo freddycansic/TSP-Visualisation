@@ -14,6 +14,7 @@ If you are running a version of Java later than 8 then you must downgrade your c
 
     sudo update-alternatives --config java
 Then select Java 8
+ 
     There are 2 choices for the alternative java (providing /usr/bin/java).
     
       Selection    Path                                            Priority   Status
