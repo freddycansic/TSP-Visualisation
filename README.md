@@ -4,10 +4,10 @@ Node based travelling salesman problem visualisation in Java. Generates a neares
 ## Usage
 Download the [TravellingSalesman.jar](https://github.com/freddycansic/TSP-Visualisation/releases/download/v1.0.0/TravellingSalesman.jar) file on the newest release.
 
-Make sure Java 8 is installed on your machine:
-
-    java -version
-If not, install java using your local package manager, e.g:
+Execute the jar file:
+    
+    java -jar /path/to/TravellingSalesman.jar
+If Java is not installed, install it using your local package manager, e.g:
 
     sudo apt install openjdk-8-jre
 If you are running a version of Java later than 8 then you must downgrade your current installation
