@@ -28,6 +28,7 @@ public class Main extends ApplicationAdapter {
 	private int numSwaps = 0;
 	public static boolean swapsMade;
 	private boolean running = true;
+	private long startTime;
 	
 	private ArrayList<Node> allNodes = new ArrayList<Node>();
 	private ArrayList<Node> route = new ArrayList<Node>();
@@ -51,14 +52,15 @@ public class Main extends ApplicationAdapter {
 			System.exit(0);
 		}
 
-		System.out.print("\nEnter number of nearest nodes to choose from when creating the base route: ");
+		System.out.print("Enter number of nearest nodes to choose from when creating the base route: ");
 		proximity = s.nextInt();
 		
 		if (proximity < 1) {
 			System.out.println("Must be at least 1.");
 			System.exit(0);
 		}
-		
+
+		proximity = 2;
 		
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
@@ -69,15 +71,25 @@ public class Main extends ApplicationAdapter {
 		font.setColor(Color.BLACK);
 		font.usesIntegerPositions();
 
+		startTime = System.currentTimeMillis();
+		
 		for (int i = 0; i < numNodes; i++) {
 			Node node = new Node(10 + r.nextInt(WIDTH - 10), 10 + r.nextInt(HEIGHT - 10));
 			allNodes.add(node);
 		}
-
+//
+//		allNodes.add(new Node(201, 200));
+//		allNodes.add(new Node(701, 700));
+//		allNodes.add(new Node(200, 703));
+//		allNodes.add(new Node(700, 204));
+		
 		route = nearestNeighbour(allNodes, proximity);
 		
 		indexGenerator = new RouteIndexGenerator(route);
 		initialDistance = totalRouteDistance(route);
+//		
+//		System.out.println(allNodes.toString());
+//		System.out.println(route.toString());
 	}
 
 	@Override
@@ -99,7 +111,8 @@ public class Main extends ApplicationAdapter {
 				System.out.println("-------------------------------------------" +
 						"\nLOCAL MINIMUM FOUND." + 
 						"\n-------------------------------------------" + 
-						"\nCTRL+C to exit.");
+						"\nCTRL+C to exit." + 
+						"\nExecution took " + ((float) (System.currentTimeMillis()-startTime)/1000.0f) + "s");
 				running = false;
 				return;
 			}
@@ -137,10 +150,12 @@ public class Main extends ApplicationAdapter {
 	}
 	
 	private ArrayList<Node> nearestNeighbour(ArrayList<Node> nodes, int proximity) {
+		nodes.get(0).setOpen(false);
 		ArrayList<Node> route = new ArrayList<Node>();
-
-		for (Node n1 : nodes) {
-
+		
+		for (int i = 0; i < nodes.size()-1; i++) {
+			Node n1 = nodes.get(i);
+			
 			// get distances from current node to all other nodes
 			Map<Integer, Node> allDistancesToNodes = new LinkedHashMap<Integer, Node>(); // (distance to node, node) map
 
@@ -153,11 +168,15 @@ public class Main extends ApplicationAdapter {
 			// convert to treemap = sort map by natural order of keys
 			Map<Integer, Node> sortedNodes = new TreeMap<Integer, Node>(allDistancesToNodes); 
 
+//			for (Map.Entry<Integer, Node> entry : sortedNodes.entrySet() ) {
+//				System.out.println(nodes.indexOf(n1) + "-" + nodes.indexOf(entry.getValue()) + " = " + entry.getKey());
+//			}
+			
 			// get first n nodes to current node = closest n nodes
 			ArrayList<Node> closestNodes = new ArrayList<Node>();
-			for(int i = 0; i < proximity; i++)
-				closestNodes.add(sortedNodes.get(sortedNodes.keySet().toArray()[i]));
-
+			for(int j = 0; j < proximity; j++)
+				closestNodes.add(sortedNodes.get(sortedNodes.keySet().toArray()[j]));
+			
 			// SELECT PATH FROM CLOSEST NODES
 			if (openNodesExist(closestNodes)) { // if any of the closest nodes are open
 				Node randomNode = pickRandomOpenNode(closestNodes); // pick a random one
@@ -169,8 +188,15 @@ public class Main extends ApplicationAdapter {
 				randomNode.setOpen(false); // close it
 				route.add(randomNode); // add it to route
 			}
+			
+//			System.out.println("Chose " + nodes.indexOf(route.get(route.size()-1)));
+//			System.out.println(route.toString());
+//			System.out.println();
+			
 		}
-
+		route.add(nodes.get(0));
+		Collections.reverse(route);
+		
 		return route;
 	}
 
@@ -208,11 +234,11 @@ public class Main extends ApplicationAdapter {
 		//		allNodes.get(0).draw(sr, Color.GREEN);
 //		allNodes.get(allNodes.size()-1).draw(sr, Color.RED);
 
-//		batch.begin();
-//		for (Node node : allNodes) {
-//			font.draw(batch, allNodes.indexOf(node) + "\n(" + node.x + ", " + node.y + ")", node.x, node.y);			
-//		}
-//		batch.end();
+		batch.begin();
+		for (Node node : allNodes) {
+			font.draw(batch, allNodes.indexOf(node) + "\n(" + node.x + ", " + node.y + ")", node.x, node.y);			
+		}
+		batch.end();
 	}
 
 	private void line(ShapeRenderer sr, Node n1, Node n2, int lineWidth) {
