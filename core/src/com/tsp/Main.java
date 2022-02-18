@@ -2,7 +2,6 @@ package com.tsp;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
@@ -10,6 +9,7 @@ import java.util.TreeMap;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,7 +30,7 @@ public class Main extends ApplicationAdapter {
 	private boolean running = true;
 	private long startTime;
 	
-	private ArrayList<Node> allNodes = new ArrayList<Node>();
+	public static ArrayList<Node> allNodes = new ArrayList<Node>();
 	private ArrayList<Node> route = new ArrayList<Node>();
 	private RouteIndexGenerator indexGenerator;
 	
@@ -59,8 +59,6 @@ public class Main extends ApplicationAdapter {
 			System.out.println("Must be at least 1.");
 			System.exit(0);
 		}
-
-		proximity = 2;
 		
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
@@ -77,19 +75,12 @@ public class Main extends ApplicationAdapter {
 			Node node = new Node(10 + r.nextInt(WIDTH - 10), 10 + r.nextInt(HEIGHT - 10));
 			allNodes.add(node);
 		}
-//
-//		allNodes.add(new Node(201, 200));
-//		allNodes.add(new Node(701, 700));
-//		allNodes.add(new Node(200, 703));
-//		allNodes.add(new Node(700, 204));
 		
 		route = nearestNeighbour(allNodes, proximity);
 		
 		indexGenerator = new RouteIndexGenerator(route);
 		initialDistance = totalRouteDistance(route);
-//		
-//		System.out.println(allNodes.toString());
-//		System.out.println(route.toString());
+
 	}
 
 	@Override
@@ -111,19 +102,18 @@ public class Main extends ApplicationAdapter {
 				System.out.println("-------------------------------------------" +
 						"\nLOCAL MINIMUM FOUND." + 
 						"\n-------------------------------------------" + 
-						"\nCTRL+C to exit." + 
-						"\nExecution took " + ((float) (System.currentTimeMillis()-startTime)/1000.0f) + "s");
+						"\nExecution took " + ((float) (System.currentTimeMillis()-startTime)/1000.0f) + "s" +
+						"\nPress enter to exit...");
 				running = false;
 				return;
-			}
-			
+			}			
 			// deep copy route
 			ArrayList<Node> swappedRoute = new ArrayList<Node>();
 			swappedRoute.addAll(route);			
 			
 			// 2 opt swap
-			Collections.swap(swappedRoute, edges[0], edges[2]);
-			
+			Collections.swap(swappedRoute, edges[1], edges[2]);
+
 			// if the swap saved distance then keep it
 			int swappedDistance = totalRouteDistance(swappedRoute);
 			if (swappedDistance < totalRouteDistance(route)) {
@@ -138,7 +128,10 @@ public class Main extends ApplicationAdapter {
 				route = swappedRoute;
 			}
 		}
-
+		
+		if (!running && Gdx.input.isKeyPressed(Keys.ENTER | Keys.ESCAPE)) {
+			Gdx.app.exit();
+		}
 	}
 
 	@Override
@@ -150,52 +143,39 @@ public class Main extends ApplicationAdapter {
 	}
 	
 	private ArrayList<Node> nearestNeighbour(ArrayList<Node> nodes, int proximity) {
-		nodes.get(0).setOpen(false);
 		ArrayList<Node> route = new ArrayList<Node>();
 		
-		for (int i = 0; i < nodes.size()-1; i++) {
-			Node n1 = nodes.get(i);
+		nodes.get(0).setOpen(false);
+		Node currentNode = nodes.get(0);
+		
+		route.add(currentNode);
+		
+		do {
 			
-			// get distances from current node to all other nodes
-			Map<Integer, Node> allDistancesToNodes = new LinkedHashMap<Integer, Node>(); // (distance to node, node) map
-
-			for (Node n2 : nodes) {
-				if (n1 == n2) continue;
-				// add distance from n2, n2 to map
-				allDistancesToNodes.put(n1.distTo(n2), n2);
-			}
-
-			// convert to treemap = sort map by natural order of keys
-			Map<Integer, Node> sortedNodes = new TreeMap<Integer, Node>(allDistancesToNodes); 
-
-//			for (Map.Entry<Integer, Node> entry : sortedNodes.entrySet() ) {
-//				System.out.println(nodes.indexOf(n1) + "-" + nodes.indexOf(entry.getValue()) + " = " + entry.getKey());
-//			}
-			
-			// get first n nodes to current node = closest n nodes
-			ArrayList<Node> closestNodes = new ArrayList<Node>();
-			for(int j = 0; j < proximity; j++)
-				closestNodes.add(sortedNodes.get(sortedNodes.keySet().toArray()[j]));
-			
-			// SELECT PATH FROM CLOSEST NODES
-			if (openNodesExist(closestNodes)) { // if any of the closest nodes are open
-				Node randomNode = pickRandomOpenNode(closestNodes); // pick a random one
-				randomNode.setOpen(false); // close it
-				route.add(randomNode); // add it to the route
-
-			} else { // otherwise 
-				Node randomNode = pickRandomOpenNode(nodes); // pick a random open node from all nodes
-				randomNode.setOpen(false); // close it
-				route.add(randomNode); // add it to route
+			Map<Integer, Node> distancesNodes = new TreeMap<Integer, Node>(); // (distance to node, node) map
+			for (Node n1 : nodes) {
+				if (n1 == currentNode || !n1.isOpen()) continue;
+				distancesNodes.put(currentNode.distTo(n1), n1);
 			}
 			
-//			System.out.println("Chose " + nodes.indexOf(route.get(route.size()-1)));
-//			System.out.println(route.toString());
-//			System.out.println();
+			ArrayList<Node> chooseFrom = new ArrayList<Node>();
 			
-		}
-		route.add(nodes.get(0));
-		Collections.reverse(route);
+			if (proximity > distancesNodes.size()) {
+				for (int i = 0; i < distancesNodes.size(); i++) {
+					chooseFrom.add(distancesNodes.get(distancesNodes.keySet().toArray()[i]));
+				}
+			} else {
+				for (int i = 0; i < proximity; i++) {
+					chooseFrom.add(distancesNodes.get(distancesNodes.keySet().toArray()[i]));
+				}				
+			}
+
+			currentNode = chooseFrom.get(r.nextInt(chooseFrom.size()));
+			currentNode.setOpen(false);
+			
+			route.add(currentNode);
+			
+		} while (openNodesExist(nodes));
 		
 		return route;
 	}
@@ -219,8 +199,6 @@ public class Main extends ApplicationAdapter {
 			
 			line(sr, route.get(edges[0]), route.get(edges[1]), 3);
 			line(sr, route.get(edges[2]), route.get(edges[3]), 3);
-//			sr.line(route.get(edges[0]).getVecPos(), route.get(edges[1]).getVecPos());
-//			sr.line(route.get(edges[2]).getVecPos(), route.get(edges[3]).getVecPos());
 		}
 		
 		sr.end();
@@ -234,31 +212,17 @@ public class Main extends ApplicationAdapter {
 		//		allNodes.get(0).draw(sr, Color.GREEN);
 //		allNodes.get(allNodes.size()-1).draw(sr, Color.RED);
 
-		batch.begin();
-		for (Node node : allNodes) {
-			font.draw(batch, allNodes.indexOf(node) + "\n(" + node.x + ", " + node.y + ")", node.x, node.y);			
-		}
-		batch.end();
+//		batch.begin();
+//		for (Node node : allNodes) {
+//			font.draw(batch, node.toString(), node.x, node.y);			
+//		}
+//		batch.end();
 	}
 
 	private void line(ShapeRenderer sr, Node n1, Node n2, int lineWidth) {
 		sr.rectLine(n1.getVecPos(), n2.getVecPos(), lineWidth);
 	}
 	
-	private Node pickRandomOpenNode(ArrayList<Node> nodes) {
-		ArrayList<Node> openNodes = new ArrayList<Node>();
-
-		for (Node node : nodes) {
-			if (node.isOpen()) openNodes.add(node);
-		}
-
-		if (openNodes.size() > 0) {
-			return openNodes.get(r.nextInt(openNodes.size()));
-		} else {
-			return null;
-		}
-	}
-
 	private int totalRouteDistance(ArrayList<Node> nodes) {
 		int distance = 0;
 		for (int i = 0; i < nodes.size()-1; i++) {
