@@ -98,7 +98,8 @@ public class Main extends ApplicationAdapter {
 			if (edges[0] == -1) { // if a full rotation was made without any swaps occurring
 				System.out.println("-------------------------------------------" +
 						"\nLOCAL MINIMUM FOUND." + 
-						"\n-------------------------------------------");
+						"\n-------------------------------------------" + 
+						"\nCTRL+C to exit.");
 				running = false;
 				return;
 			}

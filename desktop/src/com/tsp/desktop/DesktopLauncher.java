@@ -14,7 +14,7 @@ public class DesktopLauncher {
 		config.title = "Travelling Salesman";
 		config.initialBackgroundColor = Color.WHITE;
 		config.samples = 3; // anti aliasing
-		config.forceExit = true;
+		config.forceExit = false;
 		config.resizable = false;
 		config.addIcon("icon_128.png", FileType.Internal);
 		config.addIcon("icon_32.png", FileType.Internal);
