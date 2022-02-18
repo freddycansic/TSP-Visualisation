@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -19,7 +20,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class Main extends ApplicationAdapter {
 
 	private final Random r = new Random();
-	private final int NUM_NODES = 50;
+	private final Scanner s = new Scanner(System.in);
 	private int WIDTH, HEIGHT;
 	private float timeSeconds = 0;
 	private int initialDistance;
@@ -36,9 +37,29 @@ public class Main extends ApplicationAdapter {
 	private BitmapFont font;
 	private SpriteBatch batch;
 
-
+	// user args
+	private int proximity;
+	private int numNodes;
+	
 	@Override
 	public void create () {
+		System.out.print("Enter the number of nodes in the route: ");
+		numNodes = s.nextInt();
+		
+		if (numNodes < 3) {
+			System.out.println("Must be at least 3.");
+			System.exit(0);
+		}
+
+		System.out.print("\nEnter number of nearest nodes to choose from when creating the base route: ");
+		proximity = s.nextInt();
+		
+		if (proximity < 1) {
+			System.out.println("Must be at least 1.");
+			System.exit(0);
+		}
+		
+		
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		sr = new ShapeRenderer();
@@ -48,12 +69,12 @@ public class Main extends ApplicationAdapter {
 		font.setColor(Color.BLACK);
 		font.usesIntegerPositions();
 
-		for (int i = 0; i < NUM_NODES; i++) {
+		for (int i = 0; i < numNodes; i++) {
 			Node node = new Node(10 + r.nextInt(WIDTH - 10), 10 + r.nextInt(HEIGHT - 10));
 			allNodes.add(node);
 		}
 
-		route = nearestNeighbour(allNodes, 3);
+		route = nearestNeighbour(allNodes, proximity);
 		
 		indexGenerator = new RouteIndexGenerator(route);
 		initialDistance = totalRouteDistance(route);
@@ -75,7 +96,9 @@ public class Main extends ApplicationAdapter {
 			if (edges == null) return;
 			
 			if (edges[0] == -1) { // if a full rotation was made without any swaps occurring
-				System.out.println("Local minimum found.");
+				System.out.println("-------------------------------------------" +
+						"\nLOCAL MINIMUM FOUND." + 
+						"\n-------------------------------------------");
 				running = false;
 				return;
 			}
@@ -92,11 +115,11 @@ public class Main extends ApplicationAdapter {
 			if (swappedDistance < totalRouteDistance(route)) {
 				numSwaps++;
 				swapsMade = true;
-				System.out.println("Initial distance = " + initialDistance + " Current distance = " + swappedDistance);
-				System.out.println("Total distance optimised = " + (initialDistance - swappedDistance));
-				System.out.println("Distance reduced by " + (100 - (((float) swappedDistance / (float) initialDistance) * 100)) + "%");
-				System.out.println("Swapping node " + edges[0] + " and node " + edges[2]);
-				System.out.println("Total swaps made = " + numSwaps + "\n");
+				System.out.println("-------------------------------------------" +
+						"\nInitial distance = " + initialDistance +
+						"\nCurrent distance = " + swappedDistance +
+						"\nDistance reduced = " + (initialDistance - swappedDistance) + " (" + (100 - (((float) swappedDistance / (float) initialDistance) * 100)) + "%)" +
+						"\nTotal swaps made = " + numSwaps);
 				
 				route = swappedRoute;
 			}
@@ -109,6 +132,7 @@ public class Main extends ApplicationAdapter {
 		batch.dispose();
 		sr.dispose();
 		font.dispose();
+		s.close();
 	}
 	
 	private ArrayList<Node> nearestNeighbour(ArrayList<Node> nodes, int proximity) {
