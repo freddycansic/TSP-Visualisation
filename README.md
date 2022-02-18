@@ -7,7 +7,7 @@ Download the [TravellingSalesman.jar](https://github.com/freddycansic/TSP-Visual
 Execute the jar file:
     
     java -jar /path/to/TravellingSalesman.jar
-If Java is not installed, install it using your local package manager, e.g:
+If Java 8 is not installed, install it using your local package manager, e.g:
 
     sudo apt install openjdk-8-jre
 If you are running a version of Java later than 8 then you must downgrade your current installation
