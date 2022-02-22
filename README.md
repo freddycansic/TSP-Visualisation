@@ -7,7 +7,7 @@
 Node based travelling salesman problem visualisation in Java. Generates a nearest neighbour path then optimises with iterative 2-opt swaps.
 
 ## Usage
-Download the [TravellingSalesman.jar](https://github.com/freddycansic/TSP-Visualisation/releases/download/v1.0.0/TravellingSalesman.jar) file on the newest release.
+Download the [TravellingSalesman.jar](https://github.com/freddycansic/TSP-Visualisation/releases/download/v1.1.0/TravellingSalesman.jar) file on the newest release.
 
 One-liner:
     
