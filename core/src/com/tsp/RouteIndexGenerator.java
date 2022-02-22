@@ -19,9 +19,7 @@ public class RouteIndexGenerator {
 			i++;
 		}
 		if (i == route.size()) {
-			if (!Main.swapsMade) return new int[] {-1}; // return this if no swaps were made after a full rotation
 			i = 0;
-			Main.swapsMade = false;
 		}
 		
 		int edgeStartIndex1 = i;
@@ -36,7 +34,7 @@ public class RouteIndexGenerator {
 			edgeEndIndex2 = 0;
 		
 		// probably the worst code i have ever written
-		if (edgeStartIndex1 == edgeStartIndex2) return null;
+		if (edgeStartIndex1 == edgeStartIndex2) return null; // TODO
 		
 		if (edgeStartIndex1 == edgeEndIndex2) return null;
 		
