@@ -10,15 +10,20 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.height = 900;
-		config.width = 900;
+		config.width = 1200;
 		config.title = "Travelling Salesman";
 		config.initialBackgroundColor = Color.WHITE;
 		config.samples = 3; // anti aliasing
 		config.forceExit = false;
 		config.resizable = false;
-		config.addIcon("icon_128.png", FileType.Internal);
-		config.addIcon("icon_32.png", FileType.Internal);
-		config.addIcon("icon_16.png", FileType.Internal);
+		
+		config.vSyncEnabled = false;
+		config.foregroundFPS = 0;
+		config.backgroundFPS = 0;
+		
+		config.addIcon("icons/icon_128.png", FileType.Internal);
+		config.addIcon("icons/icon_32.png", FileType.Internal);
+		config.addIcon("icons/icon_16.png", FileType.Internal);
 		new LwjglApplication(new Main(), config);
 	}
 }

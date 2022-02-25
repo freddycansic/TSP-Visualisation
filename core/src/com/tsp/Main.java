@@ -2,72 +2,51 @@ package com.tsp;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.tsp.screens.MenuScreen;
+import com.badlogic.gdx.utils.Align;
+import com.tsp.scene.MenuScene;
+import com.tsp.scene.Scene;
+import com.tsp.util.ResourceManager;
 
 public class Main extends Game {
 
-	public final Random r = new Random();
+	private static Main instance;
+	private ResourceManager rm;
 	
-	public int WIDTH, HEIGHT;
-	public long startTime;
-	
-	public ShapeRenderer sr;
-	public BitmapFont font;
-	public SpriteBatch batch;
-	
+	private Scene currentScene;
+
 	@Override
-	public void create () {
+	public void create() {
+		instance = this;
+		this.rm = new ResourceManager();
 		
-		WIDTH = Gdx.graphics.getWidth();
-		HEIGHT = Gdx.graphics.getHeight();
-		sr = new ShapeRenderer();
-		batch = new SpriteBatch();
-		font = new BitmapFont(); 
+		Main.setScene(new MenuScene(rm));
+	}
 
-		font.setColor(Color.BLACK);
-		font.usesIntegerPositions();
-
-		startTime = System.currentTimeMillis();
+	@Override
+	public void render() { // turn on anti aliasing
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		
-		this.setScreen(new MenuScreen(this));
-
+		currentScene.act();
+		currentScene.render();
 	}
 
 	@Override
-	public void render () { // turn on anti aliasing
-		super.render();
+	public void dispose() {
+		rm.dispose();
 	}
 
-	@Override
-	public void dispose () {
-		batch.dispose();
-		sr.dispose();
-		font.dispose();
-	}
-
-	public void drawLine(ShapeRenderer sr, Node n1, Node n2, Color color, int lineWidth) {
-		sr.setColor(color);
-		sr.rectLine(n1.getVecPos(), n2.getVecPos(), lineWidth);
-	}
-	
-	public void drawNode(ShapeRenderer sr, Node node, Color color) {
-		sr.setColor(color);
-		sr.circle(node.x, node.y, 4);
-	}
-
-	public boolean openNodesExist(ArrayList<Node> nodes) {
-		for (Node node : nodes) {
-			if (node.isOpen()) {
-				return true;
-			}
-		}
-		return false;
+	public static void setScene(Scene scene) {
+		instance.currentScene = scene;
+		Gdx.input.setInputProcessor(scene);
 	}
 
 }
