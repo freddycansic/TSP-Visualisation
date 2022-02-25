@@ -3,7 +3,6 @@ package com.tsp.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.tsp.scene.Scene;
 
 public class TextBox extends UIComponent {
 

@@ -8,7 +8,7 @@ import com.tsp.Main;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.height = 900;
 		config.width = 1200;
 		config.title = "Travelling Salesman";
@@ -18,8 +18,19 @@ public class DesktopLauncher {
 		config.resizable = false;
 		
 		config.vSyncEnabled = false;
-		config.foregroundFPS = 0;
-		config.backgroundFPS = 0;
+		
+		if (arg.length > 0) {
+			try {
+				config.foregroundFPS = Integer.parseInt(arg[0]);
+				config.backgroundFPS = Integer.parseInt(arg[0]);							
+			} catch (Exception e) {
+				System.out.println("FPS must be an integer value.");
+				System.exit(-1);
+			}
+		} else {
+			config.foregroundFPS = 0;
+			config.backgroundFPS = 0;			
+		}
 		
 		config.addIcon("icons/icon_128.png", FileType.Internal);
 		config.addIcon("icons/icon_32.png", FileType.Internal);

@@ -1,16 +1,8 @@
 package com.tsp;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Align;
 import com.tsp.scene.MenuScene;
 import com.tsp.scene.Scene;
 import com.tsp.util.ResourceManager;
@@ -19,7 +11,6 @@ public class Main extends Game {
 
 	private static Main instance;
 	private ResourceManager rm;
-	
 	private Scene currentScene;
 
 	@Override
@@ -48,5 +39,5 @@ public class Main extends Game {
 		instance.currentScene = scene;
 		Gdx.input.setInputProcessor(scene);
 	}
-
+	
 }

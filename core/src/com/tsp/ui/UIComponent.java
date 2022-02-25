@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 
 public abstract class UIComponent extends Widget {
 
-	private float x, y, width, height;
+	protected float x, y, width, height;
 
 	public UIComponent(float x, float y, float width, float height) {
 		this.setHeight(height);

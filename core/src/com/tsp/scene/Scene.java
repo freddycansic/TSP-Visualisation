@@ -6,7 +6,6 @@ import com.tsp.ui.UIComponent;
 public abstract class Scene extends Stage{
 
 	public Scene() {
-		
 	}
 	
 	public abstract void render();

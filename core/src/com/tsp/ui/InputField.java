@@ -3,7 +3,6 @@ package com.tsp.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.tsp.scene.Scene;
 
 public class InputField extends UIComponent {
 	
@@ -21,7 +20,7 @@ public class InputField extends UIComponent {
 	
 	public InputField(Skin skin, String placeholder, float x, float y, float width, float height) {
 		super(x, y, width, height);
-		inputField = new TextField(placeholder, skin);
+		inputField = new TextField(placeholder, skin, "default");
 		inputField.setPosition(x, y);
 		inputField.setSize(width, height);
 	}

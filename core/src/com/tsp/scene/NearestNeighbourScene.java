@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Align;
 import com.tsp.Main;
@@ -27,8 +27,8 @@ public class NearestNeighbourScene extends Scene {
 	public NearestNeighbourScene(final ResourceManager rm, int numNodes, int proximity) {
 		this.rm = rm;
 
-		fps = new TextBox(rm.defaultSkin, "small", Integer.toString(Gdx.graphics.getFramesPerSecond()), Align.topLeft, 0, rm.WIDTH-10, 100, 100);
-		logBox = new TextBox(rm.defaultSkin, "small", "", Align.topLeft, rm.WIDTH + 10, 0, rm.LOG_WIDTH, rm.LOG_HEIGHT);
+		logBox = new TextBox(rm.defaultSkin, "small", "Nearest neighbour path\ngenerated with " + numNodes + " nodes\nand a selection proximity of " + proximity + ".", Align.topLeft, rm.WIDTH + 10, 0, rm.LOG_WIDTH, rm.LOG_HEIGHT);
+		fps = new TextBox(rm.defaultSkin, "small", Integer.toString(Gdx.graphics.getFramesPerSecond()), Align.topLeft, 0, rm.WIDTH+30, rm.LOG_WIDTH, 30);
 		this.addUIComponent(logBox);
 		this.addUIComponent(fps);
 		
@@ -71,23 +71,21 @@ public class NearestNeighbourScene extends Scene {
 	}
 	
 	@Override
-	public void render() {
-		this.draw();
-		
+	public void render() {		
+		// show this screen for 5 seconds
 		timeSeconds += Gdx.graphics.getDeltaTime();
+		if (timeSeconds > 3 || Gdx.input.isKeyJustPressed(Keys.ENTER)) Main.setScene(new TwoOptScene(rm, route));
 		
-		if (timeSeconds > 0) Main.setScene(new TwoOptScene(rm, route));
+		this.draw();
 		
 		rm.sr.begin(ShapeType.Line);
 		rm.sr.setColor(Color.GRAY);
 
 		// draw lines between all nodes
 		for (int i = 0; i < route.size()-1; i++) {
-			
-			//System.out.println("Drawing line between " + allNodes.indexOf(route.get(i)) + " " + allNodes.indexOf(route.get(i+1)));
 			Utils.drawLine(rm.sr, route.get(i), route.get(i+1), Color.GRAY, 1);
 		}
-		Utils.drawLine(rm.sr, route.get(0), route.get(route.size()-1), Color.GRAY, 1);
+		Utils.drawLine(rm.sr, route.get(0), route.get(route.size()-1), Color.GRAY, 1); // draw line from last to first point = complete the loop
 		
 		rm.sr.end();
 
@@ -97,22 +95,13 @@ public class NearestNeighbourScene extends Scene {
 		for (int i = 0; i<route.size(); i++) {
 			Utils.drawNode(rm.sr, route.get(i));
 		}
+		//separator rect
+		rm.sr.rect(rm.WIDTH, 0, 5, rm.HEIGHT);
+
 		rm.sr.end();
-
+	
+		// draw fps
 		fps.setText(Integer.toString(Gdx.graphics.getFramesPerSecond()));
-		
-//		rm.batch.begin();
-//		rm.regularFont.draw(
-//				rm.batch,
-//				"Nearest neighbour generated path with " + numNodes + " nodes and a selection proximity of " + proximity, 
-//				rm.WIDTH/2, 
-//				rm.HEIGHT/2, 
-//				0,
-//				Align.center,
-//				false
-//		);
-//		rm.batch.end();
-
 	}	
 	
 }
