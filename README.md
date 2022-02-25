@@ -40,7 +40,7 @@ Done!
 
 ### Windows
 
-
+Run the jar with Java versions 8-17 (Java 8, 13 and 17 confirmed to work)
 
 ## How it works
 - Get user input numNodes, proximity (Example 10, 2)
