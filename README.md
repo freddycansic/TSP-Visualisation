@@ -4,14 +4,16 @@
 
 
 # TSP-Visualisation
-Node based travelling salesman problem visualisation in Java. Generates a nearest neighbour path then optimises with iterative 2-opt swaps.
+Node based travelling salesman problem visualisation in Java. Generates a nearest neighbour path then optimises with iterative 2-opt swaps in order to find a sub optimal "shortest" path.
 
 ## Usage
-Download the [TravellingSalesman.jar](https://github.com/freddycansic/TSP-Visualisation/releases/download/v1.2.0/TravellingSalesman.jar) file on the newest release.
+Download the [jar](https://github.com/freddycansic/TSP-Visualisation/releases/download/v1.2.0/TravellingSalesman-v1.2.0.jar).
+
+### Linux
 
 One-liner:
     
-    sudo apt install openjdk-8-jre && sudo update-alternatives --config java && java -jar /path/to/TravellingSalesman.jar 
+    sudo apt update && sudo apt install openjdk-8-jre && sudo update-alternatives --config java && java -jar /path/to/TravellingSalesman.jar 
 
 Execute the jar file:
     
@@ -35,6 +37,10 @@ Then select Java 8:
     Press <enter> to keep the current choice[*], or type selection number: 2
 
 Done!
+
+### Windows
+
+
 
 ## How it works
 - Get user input numNodes, proximity (Example 10, 2)
