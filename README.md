@@ -46,8 +46,8 @@ Run the jar with Java versions 8-17 (Java 8, 13 and 17 confirmed to work)
 
 #### Why is my FPS limited to 60?
 It could be a problem with your Nvidia control panel settings.
-<img src="![image](https://user-images.githubusercontent.com/93549743/155766005-06bfb2a4-fc9d-4730-a8b0-d48a2917a43d.png)" align="left" width="720" height="533">
-
+    
+    3D Settings -> Manage 3D settings -> Global settings -> Vertical sync -> Use the 3D application setting
 
 ## How it works
 - Get user input numNodes, proximity (Example 10, 2)
