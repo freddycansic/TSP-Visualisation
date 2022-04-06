@@ -9,7 +9,7 @@ public class Node implements Comparable<Node>{
 	public Node(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.setOpen(true);
+		this.open = true;
 	}
 	
 	public boolean isOpen() {
