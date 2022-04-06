@@ -6,6 +6,10 @@
 # TSP-Visualisation
 Node based travelling salesman problem visualisation in Java. Generates a nearest neighbour path then optimises with iterative 2-opt swaps in order to find a sub optimal "shortest" path.
 
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/93549743/162010702-2b3bbdcf-7c20-431c-8890-615d662f9767.png" width=800/>
+</p>
+    
 ## Usage
 Download the [jar](https://github.com/freddycansic/TSP-Visualisation/releases/download/v1.2.0/TravellingSalesman-v1.2.0.jar).
 
